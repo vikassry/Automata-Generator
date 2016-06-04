@@ -53,15 +53,4 @@ var union = function(elements){
 };
 
 
-
-
-var divisible_by_2_transition = {
-	'q1': {0:'q2', 1:'q2'},
-	'q2': {0:'q3', 1:'q3'},
-	'q3': {0:'q2', 1:'q2'}
-}
-
-var string_length_divisible_by_2 = DFA_Generator(['q1','q2','q3'], ['0','1'], divisible_by_2_transition, 'q1',['q1','q3']);
-console.log(string_length_divisible_by_2(""));
-
 exports.DFA_Generator = DFA_Generator;
