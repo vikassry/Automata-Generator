@@ -5,7 +5,6 @@ var DFA_Generator = function (states, alphabets, transition_function, initial_st
 		if (!isValidString(input_text, alphabets)){
 			console.log("Input is wrong!! Please provide input using ("+ alphabets.join(",")+ ") alphabets");
 			throw "Invalid Input";
-			return;
 		}
 
 		if(!isValidTransitionFunction(transition_function, states))
@@ -57,11 +56,12 @@ var union = function(elements){
 
 
 var divisible_by_2_transition = {
-	'q1': {0:'q2', 1:'q2', 'isFinal':true},
-	'q2': {0:'q3', 1:'q3', 'isFinal':false},
-	'q3': {0:'q2', 1:'q2', 'isFinal':true}
+	'q1': {0:'q2', 1:'q2'},
+	'q2': {0:'q3', 1:'q3'},
+	'q3': {0:'q2', 1:'q2'}
 }
 
 var string_length_divisible_by_2 = DFA_Generator(['q1','q2','q3'], ['0','1'], divisible_by_2_transition, 'q1',['q1','q3']);
-console.log(string_length_divisible_by_2('011'));
-console.log(string_length_divisible_by_2('0110'));
+console.log(string_length_divisible_by_2(""));
+
+exports.DFA_Generator = DFA_Generator;
