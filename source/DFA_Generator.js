@@ -3,15 +3,14 @@ var DFA_Generator = function (states, alphabets, transition_function, initial_st
 
 	return function(input_text){
 		if (!isValidString(input_text, alphabets)){
-			console.log("Input is wrong!! Please provide input using ("+ alphabets.join(",")+ ") alphabets");
-			throw "Invalid Input";
+			throw ("Invalid Input!! Please provide input using (" + alphabets.join(',')+ ") alphabets");
 		}
 
 		if(!isValidTransitionFunction(transition_function, states))
-			throw "Invalid Transition Function!!";
+			throw ("Invalid Transition Function!!");
 
 		if(!isValidFinalStates(final_states, states))
-			throw "Invalid Final states!!";
+			throw ("Invalid Final states!!");
 
 		var state_for_input_string =  state_reducer(input_text, transition_function, initial_state);
 		return final_states.indexOf(state_for_input_string) >= 0;
