@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "starting writing parser",
   "main": "DFA_Generator.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vikassry/Automata-.git"
@@ -17,6 +16,7 @@
   "homepage": "https://github.com/vikassry/Automata-#readme",
   "dependencies": {
     "chai": "^3.5.0",
+    "lodash": "^4.13.1",
     "mocha": "^2.5.3"
   }
 }

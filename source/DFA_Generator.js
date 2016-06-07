@@ -25,26 +25,26 @@ var state_reducer = function(input_text, transition_function, initial_state){
 };
 
 var isSubsetOf = function (subset_candidate, superSet){
-	return subset_candidate.every(function(element){
-		return superSet.indexOf(element) >= 0;
+		return subset_candidate.every(function(element){
+			return superSet.indexOf(element) >= 0;
 	});
 };
 
 var isValidString = function (input, all_alphabets){
-	var uniq_input_alphabets =  (Array.isArray(input)) ? union(input) : union(input.split(''));
-	return isSubsetOf(uniq_input_alphabets, all_alphabets);
+		var uniq_input_alphabets =  (Array.isArray(input)) ? uniq(input) : uniq(input.split(''));
+		return isSubsetOf(uniq_input_alphabets, all_alphabets);
 };
 
 var isValidTransitionFunction = function (transition_function, states){
-	return isSubsetOf(Object.keys(transition_function), states);
+		return isSubsetOf(Object.keys(transition_function), states);
 };
 
 var isValidFinalStates = function (final_states, states){
-	return isSubsetOf(final_states, states);
+		return (final_states.length) ? isSubsetOf(final_states, states) : false;
 };
 
 
-var union = function(elements){
+var uniq = function(elements){
 	return elements.reduce(function(prev, curr){
 		(prev.indexOf(curr)<0) && prev.push(curr);
 		return prev;

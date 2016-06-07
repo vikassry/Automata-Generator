@@ -2,7 +2,7 @@ var assert = require('chai').assert;
 var DFA_Generator = require('../source/DFA_Generator').DFA_Generator;
 
 describe('DFA Generator', function() {
-    describe('Language w | w is string with length divisible by 2', function () {
+    describe(' Language w | w is string with length divisible by 2', function () {
         var lang = {
         states: ["q1","q2","q3"],
         alphabets : ['0','1'],
@@ -33,7 +33,7 @@ describe('DFA Generator', function() {
       });
     });
 
-    describe('Language W | W is string with length greater than 3 and has 1 as 3rd alphabet', function(){
+    describe('Language w | w is string with length greater than 3 and has 1 as 3rd alphabet', function(){
         var lang = {
             states: ["q1","q2","q3","q4","q5","q6"],
             alphabets : ['0','1'],
