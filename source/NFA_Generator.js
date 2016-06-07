@@ -13,13 +13,13 @@ var NFA_Generator = function (states, alphabets, transition_function, initial_st
 		if(!isValidFinalStates(final_states, states))
 			throw ("Invalid Final states!!");
 
-		var state_for_input_string =  state_reducer(input_text, transition_function, initial_state);
+		var state_for_input_string =  reducer_state_for(input_text, transition_function, initial_state);
     var result = _.intersection(state_for_input_string, final_states);
 		return result.length > 0;
 	}
 };
 
-var state_reducer = function(input, transition_function, initial_state){
+var reducer_state_for = function(input, transition_function, initial_state){
     if (input.length==0) return [initial_state];
     return input.split('').reduce(function(states, alphabet) {
 		    return _.flatten(states.map(function(state){
@@ -36,7 +36,7 @@ var isSubsetOf = function (subset_candidate, superSet){
 };
 
 var isValidString = function (input, all_alphabets){
-		var uniq_input_alphabets =  (Array.isArray(input)) ? union(input) : union(input.split(''));
+		var uniq_input_alphabets =  (Array.isArray(input)) ? input : input.split('');
 		return isSubsetOf(uniq_input_alphabets, all_alphabets);
 };
 
@@ -46,14 +46,6 @@ var isValidTransitionFunction = function (transition_function, states){
 
 var isValidFinalStates = function (final_states, states){
 		return (final_states.length) ? isSubsetOf(final_states, states) : false;
-};
-
-
-var union = function(elements){
-	return elements.reduce(function(prev, curr){
-		(prev.indexOf(curr)<0) && prev.push(curr);
-		return prev;
-	},[]);
 };
 
 
