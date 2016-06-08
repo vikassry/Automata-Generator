@@ -12,32 +12,50 @@ var NFA_Generator = function (states, alphabets, transition_function, initial_st
 		if(!isValidFinalStates(final_states, states))
 			throw ("Invalid Final states!!");
 
-		var state_for_input_string =  reducer_state_for(input_text, transition_function, initial_state);
-    var result = _.intersection(state_for_input_string, final_states);
-		return result.length > 0;
+		var final_state_candidates =  reducer_state_for(input_text, transition_function, initial_state);
+		epsilon_states_for_final_state_candidates = get_epsilon_states_for(final_state_candidates, transition_function);
+		final_state_candidates = final_state_candidates.concat(_.flatten(epsilon_states_for_final_state_candidates));
+		return hasFinalState(final_state_candidates, final_states);
 	}
 };
 
+var hasFinalState = function (final_state_candidates, final_states){
+		var final_states = _.intersection(final_state_candidates, final_states);
+		return final_states.length > 0;
+}
+
 var reducer_state_for = function(input, transition_function, initial_state){
-    if (input.length==0){
-			return (transition_function[initial_state][epsilon]) ? transition_function[initial_state][epsilon] : [initial_state];
-		}
-    return input.split('').reduce(function(states, alphabet, index) {
+    if (input.length==0)
+				return (transition_function[initial_state][epsilon]) ? transition_function[initial_state][epsilon] : [initial_state];
+
+		return input.split('').reduce(function(states, alphabet, index) {
 		    return _.flatten(states.map(function(state){
-						var epsilon_transactions = get_epsilon_states_for(alphabet,state,transition_function);
-            return (transition_function[state] && transition_function[state][alphabet]) ? transition_function[state][alphabet].concat(epsilon_transactions) : epsilon_transactions;
+						var epsilon_states = get_epsilon_states(state,transition_function);
+						var epsilon_transacted_states = get_states_after_epsilon_transaction(epsilon_states, alphabet,transition_function);
+            return (transition_function[state] && transition_function[state][alphabet]) ? transition_function[state][alphabet].concat(epsilon_transacted_states) : epsilon_transacted_states;
         }));
 	}, [initial_state]);
 };
 
-var get_epsilon_states_for = function (alphabet, state, transition_function){
-		var states_epsilon_transactions = (transition_function[state] && transition_function[state][epsilon]) ? transition_function[state][epsilon] : [];
-		var epsilon_states = states_epsilon_transactions.map(function(eps_state){
-				return ((transition_function[eps_state]) && transition_function[eps_state][alphabet]) && transition_function[eps_state][alphabet] || [];
+var get_epsilon_states = function(state, transition_function){
+		var states_epsilon_transactions = (transition_function[state] && transition_function[state][epsilon])
+				&& transition_function[state][epsilon] || [];
+		return states_epsilon_transactions;
+}
+
+var get_states_after_epsilon_transaction = function (epsilon_states, alphabet,transition_function){
+		var epsilon_transacted_states = epsilon_states.map(function(eps_state){
+				return ((transition_function[eps_state]) && transition_function[eps_state][alphabet])
+						&& transition_function[eps_state][alphabet] || [];
 		});
-		return _.flatten(epsilon_states);
+		return _.flatten(epsilon_transacted_states);
 };
 
+var get_epsilon_states_for = function(states_for_fianl_candidate, transition_function){
+		return states_for_fianl_candidate.map(function(final_state_candidate){
+				return get_epsilon_states(final_state_candidate, transition_function);
+		});
+}
 
 var isSubsetOf = function (subset_candidate, superSet){
 		return subset_candidate.every(function(element){
