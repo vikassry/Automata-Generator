@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "starting writing parser",
   "main": "DFA_Generator.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node source/DFA_Generator.js",
+    "tests": "mocha test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vikassry/Automata-.git"

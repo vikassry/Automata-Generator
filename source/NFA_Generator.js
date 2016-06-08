@@ -1,12 +1,11 @@
 var _ = require("lodash");
+var epsilon = "ε";
 
 var NFA_Generator = function (states, alphabets, transition_function, initial_state, final_states){
-
 	return function(input_text){
 		if (!isValidString(input_text, alphabets)){
 			throw ("Input is wrong!! Please provide input using ("+ alphabets.join(",")+ ") alphabets");
 		}
-
 		if(!isValidTransitionFunction(transition_function, states))
 			throw ("Invalid Transition Function!!");
 
@@ -20,12 +19,23 @@ var NFA_Generator = function (states, alphabets, transition_function, initial_st
 };
 
 var reducer_state_for = function(input, transition_function, initial_state){
-    if (input.length==0) return [initial_state];
-    return input.split('').reduce(function(states, alphabet) {
+    if (input.length==0){
+			return (transition_function[initial_state][epsilon]) ? transition_function[initial_state][epsilon] : [initial_state];
+		}
+    return input.split('').reduce(function(states, alphabet, index) {
 		    return _.flatten(states.map(function(state){
-            return transition_function[state][alphabet];
+						var epsilon_transactions = get_epsilon_states_for(alphabet,state,transition_function);
+            return (transition_function[state] && transition_function[state][alphabet]) ? transition_function[state][alphabet].concat(epsilon_transactions) : epsilon_transactions;
         }));
 	}, [initial_state]);
+};
+
+var get_epsilon_states_for = function (alphabet, state, transition_function){
+		var states_epsilon_transactions = (transition_function[state] && transition_function[state][epsilon]) ? transition_function[state][epsilon] : [];
+		var epsilon_states = states_epsilon_transactions.map(function(eps_state){
+				return ((transition_function[eps_state]) && transition_function[eps_state][alphabet]) && transition_function[eps_state][alphabet] || [];
+		});
+		return _.flatten(epsilon_states);
 };
 
 
