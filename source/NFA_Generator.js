@@ -4,7 +4,7 @@ var epsilon = "ε";
 var NFA_Generator = function (states, alphabets, delta, initial_state, final_states){
 	return function(input_text){
 		if (!isValidString(input_text, alphabets))
-			throw ("Input is wrong!! Please provide input using ("+ alphabets.join(",")+ ") alphabets");
+			throw ("Invalid Input String!! Please use ("+ alphabets.join(",")+ ") only");
 
 		if(!isValidTransitionFunction(delta, states))
 			throw ("Invalid Transition Function!!");
@@ -12,9 +12,10 @@ var NFA_Generator = function (states, alphabets, delta, initial_state, final_sta
 		if(!isValidFinalStates(final_states, states))
 			throw ("Invalid Final states!!");
 
-		var final_state_candidates =  resolveState(input_text, delta, initial_state);
+		var initial_states = getEpsilonStates([initial_state], delta);
+		var final_state_candidates =  resolveState(input_text, delta, initial_states);
 		var epsilons_states_at_end = getEpsilonStatesFromStates(final_state_candidates, delta);
-		final_state_candidates = final_state_candidates.concat(_.flatten(epsilons_states_at_end));
+		final_state_candidates = final_state_candidates.concat(epsilons_states_at_end);
 		return isInFinalState(final_state_candidates, final_states);
 	}
 };
@@ -25,11 +26,9 @@ var isInFinalState = function (final_state_candidates, final_states){
 };
 
 var resolveState = function(input, delta, initial_state){
-		if(isEmpty(input))
-				return getEpsilonStatesFor(initial_state, delta).concat(initial_state);
 		return input.split('').reduce(function(states, alphabet) {
 		    return state_mapper(alphabet,states, delta);
-	}, [initial_state]);
+	}, initial_state);
 };
 
 var state_mapper = function(alphabet, states, delta){
@@ -42,15 +41,19 @@ var state_mapper = function(alphabet, states, delta){
 }
 
 var getEpsilonStatesFor = function(state, delta){
-		var states_epsilon_transactions = (delta[state] && delta[state][epsilon])
-				&& delta[state][epsilon] || [];
-		return states_epsilon_transactions;
+		return (delta[state] && delta[state][epsilon]) ? delta[state][epsilon] : [];
+};
+
+var states_till_all_epsilons = function (state, delta) {
+		if (delta[state] && delta[state][epsilon])
+				return delta[state][epsilon]
+		return
 };
 
 var getEpsilonStatesFromStates = function(final_state_candidate, delta){
-		return final_state_candidate.map(function(final_state_candidate){
+		return _.flatten(final_state_candidate.map(function(final_state_candidate){
 				return getEpsilonStatesFor(final_state_candidate, delta);
-		});
+		}));
 };
 
 var isSubsetOf = function (subset_candidate, superSet){
@@ -72,16 +75,26 @@ var isValidFinalStates = function (final_states, states){
 		return (final_states.length) ? isSubsetOf(final_states, states) : false;
 };
 
-var isEmpty = function (string) {
-		return string.length == 0;
+var isEmpty = function (array) {
+		return array.length == 0;
 };
 
-var isNotEmpty = function (string) {
-		return !isEmpty(string);
+var isNotEmpty = function (array) {
+		return !isEmpty(array);
 };
 
 var contains = function (array, element) {
 		return array.indexOf(element) > -1;
+};
+
+
+var getEpsilonStates = function(states, delta){
+		return _.flatten(states.map(function(state){
+			if (delta[state] && delta[state][epsilon])
+				return [state].concat(getEpsilonStates(delta[state][epsilon], delta));
+			return [state];
+		}));
+
 };
 
 exports.NFA_Generator = NFA_Generator;

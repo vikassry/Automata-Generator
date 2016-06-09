@@ -170,68 +170,68 @@ describe('NFA Generator', function() {
     });
 
     describe('language w | w is string contains with an even number of 1s or even number of 0s', function () {
-      var lang = {
-          states: ["q1", "q2", "q3", "q4", "q5"],
-          alphabets: ["1", "0", "ε"],
-          transition_function: {
-            "q1": {"ε": ["q2", "q4"]},
-            "q2": {"0": ["q3"], "1": ["q2"]},
-            "q3": {"0": ["q2"], "1": ["q3"]},
-            "q4": {"0": ["q4"], "1": ["q5"]},
-            "q5": {"0": ["q5"], "1": ["q4"]}
-          },
-          initial_state: "q1",
-          final_states: ["q2", "q4"]
-      };
-      var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+        var lang = {
+            states: ["q1", "q2", "q3", "q4", "q5"],
+            alphabets: ["1", "0", "ε"],
+            transition_function: {
+              "q1": {"ε": ["q2", "q4"]},
+              "q2": {"0": ["q3"], "1": ["q2"]},
+              "q3": {"0": ["q2"], "1": ["q3"]},
+              "q4": {"0": ["q4"], "1": ["q5"]},
+              "q5": {"0": ["q5"], "1": ["q4"]}
+            },
+            initial_state: "q1",
+            final_states: ["q2", "q4"]
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
 
-      it('should accept string contains with an even number of 1s or os', function () {
-          assert.ok(nfa("11"));
-          assert.ok(nfa("010"));
-          assert.ok(nfa("11110"));
-      });
-      it('should accept empty string', function () {
-          assert.ok(nfa(""));
-      });
-      it('should not accept string containing odd number of 0s or 1s', function () {
-          assert.notOk(nfa("010101"));
-      });
-      it('should not accept string containing even number of neither 1s nor 0s', function () {
-          assert.notOk(nfa("01"));
-      });
+        it('should accept string contains with an even number of 1s or os', function () {
+            assert.ok(nfa("11"));
+            assert.ok(nfa("010"));
+            assert.ok(nfa("11110"));
+        });
+        it('should accept empty string', function () {
+            assert.ok(nfa(""));
+        });
+        it('should not accept string containing odd number of 0s or 1s', function () {
+            assert.notOk(nfa("010101"));
+        });
+        it('should not accept string containing even number of neither 1s nor 0s', function () {
+            assert.notOk(nfa("01"));
+        });
     });
 
     describe('language w | w is string that ends with 0', function () {
-      var lang = {
-          "states": ["q1", "q2", "q3", "q4"],
-          "alphabets": ["0", "1", "ε"],
-          "transition_function": {
-              "q1": {"ε": ["q2"]},
-              "q2": {"ε": ["q3"]},
-              "q3": {"0": ["q3", "q4"], "1": ["q3"]}
-          },
-          "initial_state": "q1",
-          "final_states": ["q4"]
+        var lang = {
+            "states": ["q1", "q2", "q3", "q4"],
+            "alphabets": ["0", "1", "ε"],
+            "transition_function": {
+                "q1": {"ε": ["q2"]},
+                "q2": {"ε": ["q3"]},
+                "q3": {"0": ["q3", "q4"], "1": ["q3"]}
+            },
+            "initial_state": "q1",
+            "final_states": ["q4"]
 
-      };
-      var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
 
-      it('should accept 0', function () {
-          assert.notOk(nfa("11"));
-          assert.ok(nfa("00"));
-          assert.ok(nfa("01110"));
-      });
-      it('should accept string ending with 0', function () {
-          assert.ok(nfa("00"));
-          assert.ok(nfa("01110"));
-      });
-      it('should not accept string not ending with 0', function () {
-          assert.notOk(nfa("11"));
-          assert.notOk(nfa("011"));
-      });
+        it('should accept 0', function () {
+            assert.notOk(nfa("11"));
+            assert.ok(nfa("00"));
+            assert.ok(nfa("01110"));
+        });
+        it('should accept string ending with 0', function () {
+            assert.ok(nfa("00"));
+            assert.ok(nfa("01110"));
+        });
+        it('should not accept string not ending with 0', function () {
+            assert.notOk(nfa("11"));
+            assert.notOk(nfa("011"));
+        });
     });
 
-    describe('Language w | w is string that satisfies (aaa)* ∪ b(ab)*', function () {
+    describe('language w | w is string such as (aaa)* ∪ b(ab)*', function () {
         var lang = {
             states: ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"],
             alphabets: ['a', 'b'],
@@ -283,21 +283,21 @@ describe('NFA Generator', function() {
         });
     });
 
-    describe('Language w | w is string that satisfies (ab ∪ ba)*', function () {
+    describe('language w | w is string such as (ab ∪ ba)*', function () {
         var lang = {
             states: ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10"],
             alphabets: ['a', 'b'],
             transition_function: {
-            'q1': {'ε': ['q2']},
-            'q2': {'ε': ['q3', 'q7']},
-            'q3': {'a': ['q4']},
-            'q4': {'ε': ['q5']},
-            'q5': {'b': ['q6']},
-            'q6': {'ε': ['q2']},
-            'q7': {'b': ['q8']},
-            'q8': {'ε': ['q9']},
-            'q9': {'a': ['q10']},
-            'q10': {'ε': ['q2']}
+              'q1': {'ε': ['q2']},
+              'q2': {'ε': ['q3', 'q7']},
+              'q3': {'a': ['q4']},
+              'q4': {'ε': ['q5']},
+              'q5': {'b': ['q6']},
+              'q6': {'ε': ['q2']},
+              'q7': {'b': ['q8']},
+              'q8': {'ε': ['q9']},
+              'q9': {'a': ['q10']},
+              'q10': {'ε': ['q2']}
             },
             initial_state: "q1",
             final_states: ['q1', 'q6', 'q10']
@@ -319,8 +319,115 @@ describe('NFA Generator', function() {
         it('should accept alternate ba combination', function () {
             assert.ok(nfa("babababa"));
         });
+        it('should not accept alternate combination of ab or ba, starting and ending with same alphabet', function () {
+            assert.notOk(nfa("babababab"));
+            assert.notOk(nfa("abababaa"));
+            assert.notOk(nfa('aaaaa'));
+            assert.notOk(nfa('bbbbb'));
+        });
         it('should not accept only one character', function () {
-            assert.notOk(nfa('aaaaaaaaa'));
+            assert.notOk(nfa('a'));
+            assert.notOk(nfa('b'));
+        });
+    });
+
+    describe('language w | w is string such (0*1* ∪ 1*0*) | 2 level ε', function () {
+        var lang = {
+            states:["q1","q3","q2","q5","q4","q6","q7"],
+            alphabets:["1","0"],
+            transition_function: {
+              "q1":{"ε":["q2","q4"]},
+              "q2":{"0":["q2"],"ε":["q3"]},
+              "q3":{"1":["q3"]},
+              "q4":{"1":["q4"],"ε":["q5"]},
+              "q5":{"0":["q5"]}
+            },
+            initial_state:"q1",
+            final_states:["q3","q5"]
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+
+        it('should accept empty string', function () {
+            assert.ok(nfa(''));
+        });
+        it('should accept 1 or 0', function () {
+            assert.ok(nfa('1'));
+            assert.ok(nfa('0'));
+        });
+        it('should accept 00 0r 11', function () {
+            assert.ok(nfa('00'));
+            assert.ok(nfa('11'));
+        });
+        it('should accept any number of 1s after any number of 0s', function () {
+            assert.ok(nfa('110'));
+            assert.ok(nfa("1100"));
+            assert.ok(nfa('100'));
+        });
+        it('should accept any number of 1s after any number of 0s', function () {
+            assert.ok(nfa('001'));
+            assert.ok(nfa("0011"));
+        });
+        it('should not accept string starting and ending with same alhabet', function () {
+            assert.notOk(nfa('101'));
+            assert.notOk(nfa('010'));
+            assert.notOk(nfa("00110"));
+            assert.notOk(nfa("11001"));
+        });
+        it('should not accept string where neither all 1s are followed by 0s nor all 0s followed by 1s ', function () {
+            assert.notOk(nfa('101'));
+            assert.notOk(nfa('010'));
+            assert.notOk(nfa("00110"));
+            assert.notOk(nfa("11001"));
+        });
+    });
+
+    describe('language w | w is string such as (0*1* ∪ 1*0*) | 3 level of ε', function () {
+        var lang = {
+            states:["q1","q3","q2","q5","q4","q6","q7"],
+            alphabets:["1","0"],
+            transition_function: {
+              "q1":{"ε":["q2","q4"]},
+              "q2":{"0":["q2"],"ε":["q3"]},
+              "q3":{"1":["q3"],"ε":["q6"]},
+              "q4":{"1":["q4"],"ε":["q5"]},
+              "q5":{"0":["q5"],"ε":["q7"]}
+            },
+            initial_state:"q1",
+            final_states:["q6","q7"]
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+
+        it('should accept empty string', function () {
+            assert.ok(nfa(''));
+        });
+        it('should accept 1 or 0', function () {
+            assert.ok(nfa('1'));
+            assert.ok(nfa('0'));
+        });
+        it('should accept 00 0r 11', function () {
+            assert.ok(nfa('00'));
+            assert.ok(nfa('11'));
+        });
+        it('should accept any number of 1s after any number of 0s', function () {
+            assert.ok(nfa('110'));
+            assert.ok(nfa("1100"));
+            assert.ok(nfa('100'));
+        });
+        it('should accept any number of 1s after any number of 0s', function () {
+            assert.ok(nfa('001'));
+            assert.ok(nfa("0011"));
+        });
+        it('should not accept string starting and ending with same alhabet', function () {
+            assert.notOk(nfa('101'));
+            assert.notOk(nfa('010'));
+            assert.notOk(nfa("00110"));
+            assert.notOk(nfa("11001"));
+        });
+        it('should not accept string where neither all 1s are followed by 0s nor all 0s followed by 1s ', function () {
+            assert.notOk(nfa('101'));
+            assert.notOk(nfa('010'));
+            assert.notOk(nfa("00110"));
+            assert.notOk(nfa("11001"));
         });
     });
 
