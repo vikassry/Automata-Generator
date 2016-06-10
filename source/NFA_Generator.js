@@ -1,15 +1,15 @@
 var _ = require("lodash");
-var nfa_lib = require('./utils.js');
+var util = require('./utils.js');
 var epsilon = "ε";
 
-var isInFinalState = nfa_lib.isInFinalState;
-var isSubsetOf = nfa_lib.isSubsetOf;
-var isValidString = nfa_lib.isValidString;
-var isValidTransitionFunction = nfa_lib.isValidTransitionFunction;
-var isValidFinalStates = nfa_lib.isValidFinalStates;
-var isInitialStateValid = nfa_lib.isInitialStateValid;
-var contains = nfa_lib.contains;
-var validateTuple = nfa_lib.validateTuple;
+var isInFinalState = util.isInFinalState;
+var isSubsetOf = util.isSubsetOf;
+var isValidString = util.isValidString;
+var isValidTransitionFunction = util.isValidTransitionFunction;
+var isValidFinalStates = util.isValidFinalStates;
+var isInitialStateValid = util.isInitialStateValid;
+var contains = util.contains;
+var validateTuple = util.validateTuple;
 
 
 var NFA_Generator = function (states, alphabets, delta, initial_state, final_states){

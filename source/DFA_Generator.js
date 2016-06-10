@@ -1,5 +1,5 @@
-var nfa_lib = require('./utils.js');
-var validateTuple = nfa_lib.validateTuple;
+var util = require('./utils.js');
+var validateTuple = util.validateTuple;
 
 var DFA_Generator = function (states, alphabets, transition_function, initial_state, final_states){
 		return function(input_text){
