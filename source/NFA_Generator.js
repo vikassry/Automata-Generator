@@ -44,12 +44,6 @@ var getEpsilonStatesFor = function(state, delta){
 		return (delta[state] && delta[state][epsilon]) ? delta[state][epsilon] : [];
 };
 
-var states_till_all_epsilons = function (state, delta) {
-		if (delta[state] && delta[state][epsilon])
-				return delta[state][epsilon]
-		return
-};
-
 var getEpsilonStatesFromStates = function(final_state_candidate, delta){
 		return _.flatten(final_state_candidate.map(function(final_state_candidate){
 				return getEpsilonStatesFor(final_state_candidate, delta);
