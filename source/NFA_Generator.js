@@ -3,52 +3,30 @@ var epsilon = "ε";
 
 var NFA_Generator = function (states, alphabets, delta, initial_state, final_states){
 	return function(input_text){
-		if (!isValidString(input_text, alphabets))
-			throw ("Invalid Input String!! Please use ("+ alphabets.join(",")+ ") only");
-
-		if(!isValidTransitionFunction(delta, states))
-			throw ("Invalid Transition Function!!");
-
-		if(!isValidFinalStates(final_states, states))
-			throw ("Invalid Final states!!");
-
-		var initial_states = getEpsilonStates([initial_state], delta);
-		var final_state_candidates =  resolveState(input_text, delta, initial_states);
-		var epsilons_states_at_end = getEpsilonStatesFromStates(final_state_candidates, delta);
-		final_state_candidates = final_state_candidates.concat(epsilons_states_at_end);
-		return isInFinalState(final_state_candidates, final_states);
-	}
+			validateTuple(input_text, states, alphabets, delta, initial_state, final_states);
+			var final_state_candidates =  resolveState(input_text, initial_state, delta);
+			return isInFinalState(final_state_candidates, final_states);
+	};
 };
 
 var isInFinalState = function (final_state_candidates, final_states){
-		var intersection = _.intersection(final_state_candidates, final_states);
-		return isNotEmpty(intersection);
+		var final_candidates = _.intersection(final_state_candidates, final_states);
+		return isNotEmpty(final_candidates);
 };
 
-var resolveState = function(input, delta, initial_state){
+var resolveState = function(input, initial_state, delta){
+		var possible_initial_states = getEpsilonStatesFrom([initial_state], delta);
 		return input.split('').reduce(function(states, alphabet) {
-		    return state_mapper(alphabet,states, delta);
-	}, initial_state);
+		    return findStateseFor(alphabet,states, delta);
+	}, possible_initial_states);
 };
 
-var state_mapper = function(alphabet, states, delta){
-		return _.flatten(states.map(function(state){
-				var next_state = delta[state] && delta[state][alphabet] || [];
-				if (delta[state] && delta[state][epsilon])
-						return next_state.concat(state_mapper(alphabet,delta[state][epsilon],delta));
-				return next_state;
+var findStateseFor = function(alphabet, states, delta){
+		var next_states = _.flatten(states.map(function(state){
+				return delta[state] && delta[state][alphabet] || [];
 		}));
+		return getEpsilonStatesFrom(next_states,delta);
 }
-
-var getEpsilonStatesFor = function(state, delta){
-		return (delta[state] && delta[state][epsilon]) ? delta[state][epsilon] : [];
-};
-
-var getEpsilonStatesFromStates = function(final_state_candidate, delta){
-		return _.flatten(final_state_candidate.map(function(final_state_candidate){
-				return getEpsilonStatesFor(final_state_candidate, delta);
-		}));
-};
 
 var isSubsetOf = function (subset_candidate, superSet){
 		return subset_candidate.every(function(element){
@@ -57,8 +35,8 @@ var isSubsetOf = function (subset_candidate, superSet){
 };
 
 var isValidString = function (input, all_alphabets){
-		var uniq_input_alphabets =  (Array.isArray(input)) ? input : input.split('');
-		return isSubsetOf(uniq_input_alphabets, all_alphabets);
+		var input_alphabets =  (Array.isArray(input)) ? input : input.split('');
+		return isSubsetOf(input_alphabets, all_alphabets);
 };
 
 var isValidTransitionFunction = function (delta, states){
@@ -68,6 +46,10 @@ var isValidTransitionFunction = function (delta, states){
 var isValidFinalStates = function (final_states, states){
 		return (final_states.length) ? isSubsetOf(final_states, states) : false;
 };
+
+var isInitialStateValid = function (initial_state, states){
+		return contains(states,initial_state);
+}
 
 var isEmpty = function (array) {
 		return array.length == 0;
@@ -81,14 +63,25 @@ var contains = function (array, element) {
 		return array.indexOf(element) > -1;
 };
 
-
-var getEpsilonStates = function(states, delta){
-		return _.flatten(states.map(function(state){
-			if (delta[state] && delta[state][epsilon])
-				return [state].concat(getEpsilonStates(delta[state][epsilon], delta));
-			return [state];
-		}));
-
+var validateTuple = function (input_text, states, alphabets, delta, initial_state, final_states){
+		if(!isValidString(input_text, alphabets))
+				throw ("Invalid Input String!! Please use ("+ alphabets.join(",")+ ") only");
+		if(!isInitialStateValid(initial_state, states))
+				throw ("Invalid Initial State!!");
+		if(!isValidTransitionFunction(delta, states))
+				throw ("Invalid Transition Function!!");
+		if(!isValidFinalStates(final_states, states))
+			throw ("Invalid Final states!!");
 };
+
+var getEpsilonStatesFrom = function(states, delta){
+    var eps_states = _.flatten(states.map(function(state){
+        return (delta[state] && delta[state][epsilon]) ? delta[state][epsilon] : [];
+    }));
+    if (isSubsetOf(eps_states, states))
+		 		return states;
+		return getEpsilonStatesFrom(_.union(states,eps_states), delta);
+};
+
 
 exports.NFA_Generator = NFA_Generator;

@@ -231,6 +231,30 @@ describe('NFA Generator', function() {
         });
     });
 
+    describe('language w | w is string abc', function () {
+        var lang = {
+            "states": ["q1", "q2", "q3", "q4", "q5", "q6"],
+            "alphabets": ["a", "b", "c"],
+            "transition_function": {
+
+                "q1": {"a": ["q2"]},
+                "q2": {"ε": ["q3"]},
+                "q3": {"ε": ["q4"]},
+                "q4": {"b": "q5"},
+                "q5": {"c": "q6"}
+            },
+            "initial_state": "q1",
+            "final_states": ["q6"]
+
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+
+        it('should accept 0', function () {
+            assert.ok(nfa("abc"));
+        });
+    });
+
+
     describe('language w | w is string such as (aaa)* ∪ b(ab)*', function () {
         var lang = {
             states: ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"],
@@ -429,6 +453,84 @@ describe('NFA Generator', function() {
             assert.notOk(nfa("00110"));
             assert.notOk(nfa("11001"));
         });
+    });
+
+    describe('Language w | w is string that satisfies (ab)*(ba)* U aa*', function () {
+        var lang = {
+            states: ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9"],
+            alphabets: ['a', 'b'],
+            transition_function: {
+              'q1': {'ε': ['q2', 'q4']},
+              'q2': {'a': ['q3']},
+              'q3': {'a': ['q3']},
+              'q4': {'a': ['q5'], 'ε': ['q6']},
+              'q5': {'b': ['q6']},
+              'q6': {'ε': ['q4', 'q7']},
+              'q7': {'b': ['q8'], 'ε': ['q9']},
+              'q8': {'a': ['q9']},
+              'q9': {'ε': ['q7']}
+            },
+            initial_state: "q1",
+            final_states: ['q3','q6','q9']
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+
+        it("should accept string that satisfies (ab)*(ba)* U aa*", function () {
+            assert.ok(nfa("a"));
+            assert.ok(nfa("aaa"));
+            assert.ok(nfa("ab"));
+            assert.ok(nfa("ba"));
+            assert.ok(nfa("abba"));
+        });
+        it("should not accept string that does not satisfy (ab)*(ba)* U aa*", function () {
+            assert.notOk(nfa("b"));
+            assert.notOk(nfa("bb"));
+            assert.notOk(nfa("bbb"));
+            assert.notOk(nfa("bbab"));
+            assert.notOk(nfa("abbb"));
+        });
+    });
+
+    describe('Language w | w is string that satisfies [ab] U (a*b* U b*a*) | epsilon at end', function () {
+        var lang = {
+            states: ["q1","q2","q3","q4","q5","q6"],
+            alphabets: ['a','b'],
+            transition_function: {
+              "q1":{"a":["q2","q4"],"b":["q2","q4"]},
+              "q2":{"a":["q2"],"ε":["q3"]},
+              "q3":{"b":["q3"],"ε":["q6"]},
+              "q4":{"b":["q4"],"ε":["q5"]},
+              "q5":{"a":["q5"],"ε":["q6"]}
+            },
+            initial_state: "q1",
+            final_states: ['q6']
+        };
+        var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
+
+        it("should accept string that satisfies [ab] U (a*b* U b*a*)", function () {
+            assert.ok(nfa("a"));
+            assert.ok(nfa("b"));
+            assert.ok(nfa("ab"));
+            assert.ok(nfa("aa"));
+            assert.ok(nfa("ba"));
+            assert.ok(nfa("bb"));
+            assert.ok(nfa("abba"));
+            assert.ok(nfa("aba"));
+            assert.ok(nfa("baab"));
+            assert.ok(nfa("abaa"));
+            assert.ok(nfa("bab"));
+            assert.ok(nfa("babb"));
+            assert.ok(nfa("baabb"));
+            assert.ok(nfa("abbaa"));
+        });
+        it("should not accept string that does not satisfy [ab] U (a*b* U b*a*)", function () {
+            assert.notOk(nfa(""));
+            assert.notOk(nfa("abab"));
+            assert.notOk(nfa("baba"));
+            assert.notOk(nfa("bbaaba"));
+            assert.notOk(nfa("aabbaa"));
+        });
+
     });
 
 });
