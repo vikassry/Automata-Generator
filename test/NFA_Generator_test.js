@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var NFA_Generator = require('../source/NFA_Generator').NFA_Generator;
+var NFA_Generator = require('../source/NFA_Generator');
 
 describe('NFA Generator', function() {
     describe('language w | w is string with length divisible by 2', function () {
@@ -491,19 +491,20 @@ describe('NFA Generator', function() {
         });
     });
 
-    describe('Language w | w is string that satisfies [ab] U (a*b* U b*a*) | epsilon at end', function () {
+    describe('Language w | w is string that satisfies [ab] U (a*b* U b*a*) | multilevel epsilon at end', function () {
         var lang = {
-            states: ["q1","q2","q3","q4","q5","q6"],
+            states: ["q1","q2","q3","q4","q5","q6","q7"],
             alphabets: ['a','b'],
             transition_function: {
               "q1":{"a":["q2","q4"],"b":["q2","q4"]},
               "q2":{"a":["q2"],"ε":["q3"]},
               "q3":{"b":["q3"],"ε":["q6"]},
               "q4":{"b":["q4"],"ε":["q5"]},
-              "q5":{"a":["q5"],"ε":["q6"]}
+              "q5":{"a":["q5"],"ε":["q6"]},
+              "q6":{"ε":["q7"]}
             },
             initial_state: "q1",
-            final_states: ['q6']
+            final_states: ['q7']
         };
         var nfa = NFA_Generator(lang.states, lang.alphabets, lang.transition_function, lang.initial_state, lang.final_states);
 

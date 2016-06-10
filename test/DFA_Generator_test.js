@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var DFA_Generator = require('../source/DFA_Generator').DFA_Generator;
+var DFA_Generator = require('../source/DFA_Generator');
 
 describe('DFA Generator', function() {
     describe(' Language w | w is string with length divisible by 2', function () {
