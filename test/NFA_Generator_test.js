@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
-var NFA_Generator = require('../source/NFA_Generator');
+var NFA_Generator = require('../source/NFA_Generator').NFA_Generator;
 
-describe('NFA Generator', function() {
+describe('NFA Generator testing', function() {
     describe('language w | w is string with length divisible by 2', function () {
         var lang = {
             states: ["q1","q2","q3"],
@@ -455,7 +455,7 @@ describe('NFA Generator', function() {
         });
     });
 
-    describe('Language w | w is string that satisfies (ab)*(ba)* U aa*', function () {
+    describe('language w | w is string that satisfies (ab)*(ba)* U aa*', function () {
         var lang = {
             states: ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9"],
             alphabets: ['a', 'b'],
@@ -491,7 +491,7 @@ describe('NFA Generator', function() {
         });
     });
 
-    describe('Language w | w is string that satisfies [ab] U (a*b* U b*a*) | multilevel epsilon at end', function () {
+    describe('language w | w is string that satisfies [ab] U (a*b* U b*a*) | multilevel epsilon at end', function () {
         var lang = {
             states: ["q1","q2","q3","q4","q5","q6","q7"],
             alphabets: ['a','b'],
