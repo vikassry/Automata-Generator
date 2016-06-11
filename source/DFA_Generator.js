@@ -1,11 +1,12 @@
 var util = require('./utils.js');
 var validateTuple = util.validateTuple;
+var contains = util.contains;
 
 var DFA_Generator = function (states, alphabets, transition_function, initial_state, final_states){
 		return function(input_text){
 				validateTuple(input_text, states, alphabets, transition_function, initial_state, final_states);
 				var state_for_input_string = resolveState(input_text, transition_function, initial_state);
-				return final_states.indexOf(state_for_input_string) >= 0;
+				return contains(final_states, state_for_input_string);
 		}
 };
 

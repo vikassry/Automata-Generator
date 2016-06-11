@@ -5,7 +5,7 @@
   "main": "DFA_Generator.js",
   "scripts": {
     "start": "node source/DFA_Generator.js",
-    "tests": "mocha test"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
