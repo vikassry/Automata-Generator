@@ -7,12 +7,29 @@ var _ = require("lodash");
 
 
 var NFA_to_DFA_converter = function (NFA_tuple) {
-    var DFA_tuple = {};
+    var states = findCombinations(NFA_tuple.states);
     var initial_state = findInitialState(NFA_tuple.initial_state, NFA_tuple.delta);
-    DFA_tuple.initial_state = initial_state;
-    return NFA_Generator(NFA_tuple.states, NFA_tuple.alphabets, NFA_tuple.delta,
-        NFA_tuple.initial_state, NFA_tuple.final_states);
+    var final_states = findFinalStates(NFA_tuple.final_states, states);
+    return NFA_Generator(states,NFA_tuple.alphabets,delta,initial_state,final_states);
 
+};
+
+var findCombinations = function (states) {
+    var result = [];
+    states.map(function(state, index){
+        return get_combination(states.slice(index,index+1),states.slice(index+1),result);
+    });
+    return states.concat(result);
+};
+
+var findInitialState = function (initial_state, delta) {
+    return getEpsilonStatesFrom([initial_state], delta).join(',');
+};
+
+var findFinalStates = function (final_states, all_state_combinations) {
+    return all_state_combinations.filter(function(combo_state){
+        return doIntersect(combo_state.split(','), final_states);
+    });
 };
 
 var get_combination = function (first, rest, result) {
@@ -28,28 +45,9 @@ var get_combination = function (first, rest, result) {
   }
 };
 
-var find_combinations = function (elements) {
-    var result = [];
-    elements.map(function(element, index){
-      return get_combination(elements.slice(index,index+1), elements.slice(index+1),result);
-    });
-    return elements.concat(result);
-};
-
-var findInitialState = function (initial_state, delta) {
-    return getEpsilonStatesFrom([initial_state], delta).join(',');
-};
-
-var findFinalStates = function (final_states, all_state_combinations) {
-    return all_state_combinations.filter(function(combo_state){
-        return doIntersect(combo_state.split(','), final_states);
-    });
-};
-
-
 
 exports.get_combination = get_combination;
-exports.find_combinations = find_combinations;
+exports.findCombinations = findCombinations;
 exports.NFA_to_DFA_converter = NFA_to_DFA_converter;
 exports.findInitialState = findInitialState;
 exports.findFinalStates = findFinalStates;

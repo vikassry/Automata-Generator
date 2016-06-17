@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var find_combinations = require('../source/nfa_to_dfa_converter.js').find_combinations;
+var findCombinations = require('../source/nfa_to_dfa_converter.js').findCombinations;
 var get_combination = require('../source/nfa_to_dfa_converter.js').get_combination;
 var NFA_to_DFA_converter = require('../source/nfa_to_dfa_converter.js').NFA_to_DFA_converter;
 var findInitialState = require('../source/nfa_to_dfa_converter.js').findInitialState;
@@ -7,20 +7,20 @@ var findFinalStates = require('../source/nfa_to_dfa_converter.js').findFinalStat
 
 
 describe('NFA To DFA Converter testing', function(){
-    describe('find_combinations', function(){
+    describe('findCombinations', function(){
         it('should give all combinations for given set of elements', function(){
             var combinations = [ 1,2,3,4,[ 1, 2 ],[ 1, 3 ],[ 1, 4 ],
                             [ 1, 2, 3 ],[ 1, 2, 4 ],[ 1, 2, 3, 4 ],
                             [ 1, 3, 4 ],[ 2, 3 ],[ 2, 4 ],[ 2, 3, 4 ],[ 3, 4 ]];
-            assert.deepEqual(find_combinations([1,2,3,4]), combinations);
+            assert.deepEqual(findCombinations([1,2,3,4]), combinations);
         });
 
         it('should give empty set of empty set of elements', function(){
-            assert.deepEqual(find_combinations([]),[]);
+            assert.deepEqual(findCombinations([]),[]);
         });
 
         it('should give empty set of empty set of elements', function(){
-            assert.deepEqual(find_combinations([1,2]), [1,2,[1,2]]);
+            assert.deepEqual(findCombinations([1,2]), [1,2,[1,2]]);
         });
     });
 
@@ -87,11 +87,18 @@ describe('NFA To DFA Converter testing', function(){
             assert.deepEqual(findInitialState(initial_state, delta), 'q1,q2,q3');
         });
     });
+
     describe('findFinalStates', function() {
         it('should give final state q3 when NFA with q3 as final state and without epsilons', function (){
           var all_combination = ['1','2','3','1,2','1,2,3','2,3'];
           var nfa_final_states = ['1','3'];
           assert.deepEqual(findFinalStates(nfa_final_states, all_combination), ['1','3','1,2','1,2,3','2,3']);
+        });
+
+        it('should give empty list when no final state', function (){
+          var all_combination = ['1','2','3','1,2','1,2,3','2,3'];
+          var nfa_final_states = [];
+          assert.deepEqual(findFinalStates(nfa_final_states, all_combination), []);
         });
     });
 
