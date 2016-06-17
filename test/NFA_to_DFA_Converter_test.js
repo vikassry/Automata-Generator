@@ -2,6 +2,8 @@ var assert = require('chai').assert;
 var find_combinations = require('../source/nfa_to_dfa_converter.js').find_combinations;
 var get_combination = require('../source/nfa_to_dfa_converter.js').get_combination;
 var NFA_to_DFA_converter = require('../source/nfa_to_dfa_converter.js').NFA_to_DFA_converter;
+var findInitialState = require('../source/nfa_to_dfa_converter.js').findInitialState;
+var findFinalStates = require('../source/nfa_to_dfa_converter.js').findFinalStates;
 
 
 describe('NFA To DFA Converter testing', function(){
@@ -42,24 +44,55 @@ describe('NFA To DFA Converter testing', function(){
             var result = [];
             get_combination([1],[2],result);
             assert.deepEqual(result, [[1,2]]);
-            var lang = {
-                states: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                alphabets: ['a', 'b'],
-                delta: {
-                  '1': {'ε': ['2', '4']},
-                  '2': {'a': ['3']},
-                  '3': {'a': ['3']},
-                  '4': {'a': ['5'], 'ε': ['6']},
-                  '5': {'b': ['6']},
-                  '6': {'ε': ['4', '7']},
-                  '7': {'b': ['8'], 'ε': ['9']},
-                  '8': {'a': ['9']},
-                  '9': {'ε': ['7']}
-                },
-                initial_state: "1",
-                final_states: ['3','6','9']
-            };
-            NFA_to_DFA_converter(lang);
         });
     });
+
+    describe('findInitialState', function() {
+        it('should give initial state q1 when NFA with only q1 as initial state', function (){
+          var delta = {
+            'q1': {0:['q2'], 1:['q2']},
+            'q2': {0:['q3'], 1:['q3']},
+            'q3': {0:['q2'], 1:['q2']}
+          };
+          var initial_state = "q1";
+          assert.equal(findInitialState(initial_state, delta), 'q1');
+        });
+
+        it('should give multiple initial states when NFA with epsilon on initial state', function (){
+          var delta = {
+              '1': {'ε': ['2', '4']},
+              '2': {'a': ['3']},
+              '3': {'a': ['3']},
+              '4': {'a': ['5'], 'ε': ['6']},
+              '5': {'b': ['6']},
+              '6': {'ε': ['4', '7']},
+              '7': {'b': ['8'], 'ε': ['9']},
+              '8': {'a': ['9']},
+              '9': {'ε': ['7']}
+          }
+          var initial_state = "1";
+          assert.equal(findInitialState(initial_state, delta), '1,2,4,6,7,9');
+        });
+
+        it('should give multiple initial states when NFA with epsilon on initial state', function (){
+            var delta = {
+                'q1': {'ε':['q2','q3']},
+                'q2': {0:['q4'], 1:['q4']},
+                'q3': {0:['q5'], 1:['q5']},
+                'q4': {0:['q2'], 1:['q2']},
+                'q5': {0:['q6'], 1:['q6']},
+                'q6': {0:['q3'], 1:['q3']}
+            };
+            var initial_state = "q1";
+            assert.deepEqual(findInitialState(initial_state, delta), 'q1,q2,q3');
+        });
+    });
+    describe('findFinalStates', function() {
+        it('should give final state q3 when NFA with q3 as final state and without epsilons', function (){
+          var all_combination = ['1','2','3','1,2','1,2,3','2,3'];
+          var nfa_final_states = ['1','3'];
+          assert.deepEqual(findFinalStates(nfa_final_states, all_combination), ['1','3','1,2','1,2,3','2,3']);
+        });
+    });
+
 });

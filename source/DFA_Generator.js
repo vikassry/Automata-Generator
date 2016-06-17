@@ -6,7 +6,7 @@ var DFA_Generator = function (states, alphabets, transition_function, initial_st
 		return function(input_text){
 				validateTuple(input_text, states, alphabets, transition_function, initial_state, final_states);
 				var state_for_input_string = resolveState(input_text, transition_function, initial_state);
-				return contains(final_states, state_for_input_string);
+				return contains(state_for_input_string, final_states);
 		}
 };
 

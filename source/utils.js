@@ -1,13 +1,12 @@
 var _ = require("lodash");
 
-var isInFinalState = function (final_state_candidates, final_states){
-		var final_candidates = _.intersection(final_state_candidates, final_states);
-		return isNotEmpty(final_candidates);
+var doIntersect = function (final_state_candidates, final_states){
+		return isNotEmpty(_.intersection(final_state_candidates, final_states));
 };
 
 var isSubsetOf = function (subset_candidate, superSet){
 		return subset_candidate.every(function(element){
-			return contains(superSet, element);
+			return contains(element, superSet);
 	});
 };
 
@@ -25,7 +24,7 @@ var isValidFinalStates = function (final_states, states){
 };
 
 var isInitialStateValid = function (initial_state, states){
-		return contains(states,initial_state);
+		return contains(initial_state, states);
 }
 
 var isEmpty = function (array) {
@@ -36,7 +35,7 @@ var isNotEmpty = function (array) {
 		return !isEmpty(array);
 };
 
-var contains = function (array, element) {
+var contains = function (element, array) {
 		return array.indexOf(element) > -1;
 };
 
@@ -57,4 +56,4 @@ exports.isNotEmpty = isNotEmpty;
 exports.contains = contains;
 exports.isSubsetOf = isSubsetOf;
 exports.validateTuple = validateTuple;
-exports.isInFinalState = isInFinalState;
+exports.doIntersect = doIntersect;

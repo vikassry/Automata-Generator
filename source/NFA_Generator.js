@@ -2,13 +2,12 @@ var _ = require("lodash");
 var util = require('./utils.js');
 var epsilon = "ε";
 
-var isInFinalState = util.isInFinalState;
+var doIntersect = util.doIntersect;
 var isSubsetOf = util.isSubsetOf;
 var isValidString = util.isValidString;
 var isValidTransitionFunction = util.isValidTransitionFunction;
 var isValidFinalStates = util.isValidFinalStates;
 var isInitialStateValid = util.isInitialStateValid;
-var contains = util.contains;
 var validateTuple = util.validateTuple;
 
 
@@ -16,7 +15,7 @@ var NFA_Generator = function (states, alphabets, delta, initial_state, final_sta
 	return function(input_text){
 			validateTuple(input_text, states, alphabets, delta, initial_state, final_states);
 			var final_state_candidates =  resolveState(input_text, initial_state, delta);
-			return isInFinalState(final_state_candidates, final_states);
+			return doIntersect(final_state_candidates, final_states);
 	};
 };
 
