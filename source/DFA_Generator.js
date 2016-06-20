@@ -11,7 +11,9 @@ var DFA_Generator = function (states, alphabets, transition_function, initial_st
 };
 
 var resolveState = function(input_text, transition_function, initial_state){
+	console.log(input_text);
 		return input_text.split('').reduce(function(state, alphabet){
+			// console.log(transition_function[state]);
 				return transition_function[state][alphabet];
 		}, initial_state);
 };

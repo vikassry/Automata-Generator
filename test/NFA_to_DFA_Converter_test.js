@@ -4,9 +4,11 @@ var get_combination = require('../source/nfa_to_dfa_converter.js').get_combinati
 var NFA_to_DFA_converter = require('../source/nfa_to_dfa_converter.js').NFA_to_DFA_converter;
 var findInitialState = require('../source/nfa_to_dfa_converter.js').findInitialState;
 var findFinalStates = require('../source/nfa_to_dfa_converter.js').findFinalStates;
+var convertNfaTransitionToDfa = require('../source/nfa_to_dfa_converter.js').convertNfaTransitionToDfa;
 
 
 describe('NFA To DFA Converter testing', function(){
+
     describe('findCombinations', function(){
         it('should give all combinations for given set of elements', function(){
             var combinations = [ 1,2,3,4,[ 1, 2 ],[ 1, 3 ],[ 1, 4 ],
@@ -19,8 +21,12 @@ describe('NFA To DFA Converter testing', function(){
             assert.deepEqual(findCombinations([]),[]);
         });
 
-        it('should give empty set of empty set of elements', function(){
+        it('should give combinations for small set of elements without join', function(){
             assert.deepEqual(findCombinations([1,2]), [1,2,[1,2]]);
+        });
+
+        it('should give joined combinations set of elements ', function(){
+            assert.deepEqual(findCombinations([1,2],true), [1,2,'1,2']);
         });
     });
 
@@ -42,8 +48,14 @@ describe('NFA To DFA Converter testing', function(){
 
         it('should give first set of combinations for set of elements', function(){
             var result = [];
-            get_combination([1],[2],result);
-            assert.deepEqual(result, [[1,2]]);
+            get_combination([1],[2],result, true);
+            assert.deepEqual(result, ['1,2']);
+        });
+
+        it('should give first set of joined combinations for set of elements', function(){
+            var result = [];
+            get_combination([1],[2],result, true);
+            assert.deepEqual(result, ['1,2']);
         });
     });
 
@@ -101,5 +113,35 @@ describe('NFA To DFA Converter testing', function(){
           assert.deepEqual(findFinalStates(nfa_final_states, all_combination), []);
         });
     });
+
+    describe('convert', function() {
+        it('should conver NFA transition without epsilons  table to DFA transitions', function (){
+          var NFA_transitions = {
+              'q1': {'0':['q2'], '1':['q2']},
+              'q2': {'0':['q3'], '1':['q3']},
+              'q3': {'0':['q2'], '1':['q2']}
+          };
+          var DFA_transitions = {
+              'q1':   { '0': 'q2', '1': 'q2' },
+              'q2':   { '0': 'q3', '1': 'q3' },
+              'q3':   { '0': 'q2', '1': 'q2' },
+              'q1,q2':{ '0': 'q2,q3', '1': 'q2,q3' },
+              'q1,q3':{ '0': 'q2', '1': 'q2' },
+              'q2,q3':{ '0': 'q2,q3', '1': 'q2,q3' },
+              'q1,q2,q3': { '0': 'q2,q3', '1': 'q2,q3' }
+          };
+          // {
+          //     'q1': {'0':'q2', '1':'q2'},    After removing unecessary transitions (states)
+          //     'q2': {'0':'q3', '1':'q3'},
+          //     'q3': {'0':'q2', '1':'q2'}
+          // };
+          var all_combinations = findCombinations(['q1','q2','q3'], true);
+          var result = convertNfaTransitionToDfa(all_combinations, ['0','1'], NFA_transitions);
+          assert.deepEqual(result, DFA_transitions);
+        });
+    });
+
+
+
 
 });
