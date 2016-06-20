@@ -22,11 +22,11 @@ var NFA_Generator = function (states, alphabets, delta, initial_state, final_sta
 var resolveState = function(input, initial_state, delta){
 		var possible_initial_states = getEpsilonStatesFrom([initial_state], delta);
 		return input.split('').reduce(function(states, alphabet) {
-		    return findStateseOn(alphabet,states, delta);
+		    return findStatesOn(alphabet,states, delta);
 	}, possible_initial_states);
 };
 
-var findStateseOn = function(alphabet, states, delta){
+var findStatesOn = function(alphabet, states, delta){
 		var next_states = _.flatten(states.map(function(state){
 				return delta[state] && delta[state][alphabet] || [];
 		}));
@@ -45,3 +45,4 @@ var getEpsilonStatesFrom = function(states, delta){
 
 exports.NFA_Generator = NFA_Generator;
 exports.getEpsilonStatesFrom = getEpsilonStatesFrom;
+exports.findStatesOn = findStatesOn;
