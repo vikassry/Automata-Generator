@@ -19,6 +19,7 @@ var NFA_Generator = function (states, alphabets, delta, initial_state, final_sta
 	};
 };
 
+
 var resolveState = function(input, initial_state, delta){
 		var possible_initial_states = getEpsilonStatesFrom([initial_state], delta);
 		return input.split('').reduce(function(states, alphabet) {
